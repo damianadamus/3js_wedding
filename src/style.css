@@ -254,6 +254,14 @@ section { position: relative; padding: 18vh var(--gutter); }
 .dancer.a .arm.r { transform-origin: 0% 0%; animation: pump 0.46875s steps(2) infinite alternate-reverse; }
 .dancer.b .arm { transform-origin: 50% 100%; animation: wave 0.46875s steps(2) infinite alternate; }
 .dancer.b .arm.r { animation-direction: alternate-reverse; }
+.dancers .dog-leg { stroke-width: 3.5; }
+.dancers .dog-stitch { stroke-width: 1.5; }
+.dancers .dog-mouth { stroke: var(--ink); stroke-width: 1.8; }
+.dancers .tail { stroke-width: 3; }
+.dog { transform-box: fill-box; transform-origin: 50% 100%; animation: hop 0.46875s steps(2) infinite alternate; }
+.dog .tail { transform-box: fill-box; transform-origin: 100% 100%; animation: wag 0.234s steps(2) infinite alternate; }
+@keyframes hop { from { transform: translate(196px, 0) scale(1.5); } to { transform: translate(196px, -8px) scale(1.5) rotate(-3deg); } }
+@keyframes wag { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
 @keyframes pump { from { transform: rotate(-10deg); } to { transform: rotate(14deg); } }
 @keyframes wave { from { transform: rotate(-12deg); } to { transform: rotate(12deg); } }
 
@@ -320,3 +328,8 @@ section { position: relative; padding: 18vh var(--gutter); }
   *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* RSVP extras */
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-error { margin-top: 1rem; padding: 0.8em 1em; border: 1px dashed var(--paper); }
+.pill:disabled { opacity: 0.6; cursor: progress; }

@@ -1,6 +1,6 @@
 # Rave Wedding
 
-A black & white, Berlin/Paris-rave wedding website built with Three.js.
+Paola & Bejlux — 04.08.2033, Warsaw. A black & white, Berlin/Paris-rave wedding website built with Three.js.
 
 - One particle system that morphs on scroll: disco ball → wedding rings → Joy Division ridges → Burton spiral hill → galaxy → heart
 - Parallax layers (scroll + mouse), smooth scrolling with Lenis

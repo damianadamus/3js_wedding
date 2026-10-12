@@ -5,7 +5,7 @@ import { createScene } from './scene.js';
 import { Rave } from './audio.js';
 import { initBurton } from './burton.js';
 
-const WEDDING_DATE = new Date('2027-06-12T16:00:00+02:00');
+const WEDDING_DATE = new Date('2033-08-04T16:00:00+02:00');
 const BEAT_SEC = 60 / 128;
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -109,12 +109,40 @@ const io = new IntersectionObserver(
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
 /* ---------- RSVP ---------- */
+// Submissions go to the Formspree endpoint in the form's `action` (index.html).
 const form = document.querySelector('#rsvp-form');
-form.addEventListener('submit', (e) => {
+const submitBtn = form.querySelector('[type=submit]');
+const formError = form.querySelector('.form-error');
+const showError = (msg) => {
+  formError.textContent = msg;
+  formError.hidden = false;
+};
+
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const data = Object.fromEntries(new FormData(form));
-  // TODO: send `data` to a real endpoint (Formspree, Google Form, Supabase…)
-  console.info('RSVP', data);
+  formError.hidden = true;
+  if (form.action.includes('YOUR_FORM_ID')) {
+    showError('RSVP is not connected yet — the Formspree form ID is missing.');
+    return;
+  }
+  const body = new FormData(form);
+  const data = Object.fromEntries(body);
+  const label = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+  try {
+    const res = await fetch(form.action, { method: 'POST', body, headers: { Accept: 'application/json' } });
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 429) throw new Error('Too many RSVPs at once — please try again in a minute.');
+      throw new Error(json.errors?.map((er) => er.message).join(', ') || 'Something went wrong. Please try again.');
+    }
+  } catch (err) {
+    showError(err instanceof TypeError ? 'Network error — check your connection and try again.' : err.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = label;
+    return;
+  }
   const yes = data.attending === 'yes';
   form.classList.add('sent');
   form.querySelector('.thanks h3').textContent = yes ? `You're on the list, ${data.name.split(' ')[0]}.` : 'We’ll miss you.';
