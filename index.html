@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mara & Jules — Till Sunrise</title>
+  <meta name="description" content="Mara & Jules are getting married. 12.06.2027, Berlin. Black & white only. Dancing till sunrise." />
+  <meta name="theme-color" content="#0b0b0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0b0b'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='%23f3f1ec' font-family='serif' font-style='italic'>&amp;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300;1,500&family=Unbounded:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- hand-drawn "boil" used by .boil elements -->
+  <svg class="defs" aria-hidden="true" width="0" height="0">
+    <filter id="boil">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="0" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <pattern id="stripes" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="6" fill="#f3f1ec" /><rect y="6" width="12" height="6" fill="#0b0b0b" />
+    </pattern>
+  </svg>
+
+  <canvas id="webgl" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"></div>
+
+  <!-- ============ DOOR ============ -->
+  <div class="door" role="dialog" aria-label="Enter">
+    <div class="door-inner">
+      <p class="mono small">Guest list · Door 1 · 12.06.2027</p>
+      <p class="door-names serif"><em>Mara</em> <span class="amp">&amp;</span> <em>Jules</em></p>
+      <p class="mono small dim">The bouncer checks. You're on the list.</p>
+      <div class="door-btns">
+        <button class="pill solid" data-enter="sound">Enter with sound</button>
+        <button class="pill" data-enter="silent">Enter in silence</button>
+      </div>
+      <svg class="door-spiral boil" viewBox="0 0 120 120" aria-hidden="true"><path data-spiral="60,60,4,54" /></svg>
+    </div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <a href="#top" class="mono logo">M<span>&amp;</span>J</a>
+    <nav class="mono">
+      <a href="#story">Story</a>
+      <a href="#lineup">Line-up</a>
+      <a href="#dress">Dress code</a>
+      <a href="#venue">Venue</a>
+      <a href="#rsvp" class="cta">RSVP</a>
+    </nav>
+    <button class="mono sound" data-sound aria-pressed="false"><i class="eq"><b></b><b></b><b></b></i><span>Sound off</span></button>
+    <div class="progress"><i></i></div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top" data-scene="0">
+      <div class="layer moon-wrap" data-speed="-0.25" data-depth="-18">
+        <svg class="moon boil" viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="88" />
+          <path class="moon-spiral" data-spiral="100,100,3.5,70" />
+        </svg>
+      </div>
+      <div class="layer bats" data-bats="7" data-speed="-0.45" data-depth="30"></div>
+
+      <div class="hero-copy" data-speed="0.18" data-depth="8">
+        <p class="mono small kicker">Together with their families &amp; their favourite DJs</p>
+        <h1 class="names">
+          <span class="serif"><em>Mara</em></span>
+          <span class="amp">&amp;</span>
+          <span class="serif"><em>Jules</em></span>
+        </h1>
+        <p class="mono date">Sat 12.06.2027 <span class="sep">/</span> Berlin <span class="sep">/</span> 16:00 → sunrise</p>
+        <p class="mono small dim"><b data-countdown>—</b> days until the drop</p>
+      </div>
+
+      <div class="layer skyline-wrap" data-speed="0.08">
+        <svg class="skyline boil" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <!-- crooked Berlin TV tower, leaning towards Paris -->
+          <g transform="translate(560 330) rotate(-9)">
+            <path d="M-9 0 Q-3 -110 -5 -190 L5 -190 Q3 -110 9 0Z" />
+            <circle cx="0" cy="-210" r="22" />
+            <path d="M-22 -210 H22" class="thin" />
+            <path d="M0 -232 L-2 -330" />
+            <path class="thin" data-spiral="-2,-340,2.2,11" />
+          </g>
+          <!-- crooked Eiffel tower, leaning towards Berlin -->
+          <g transform="translate(1080 350) rotate(8)">
+            <path d="M-48 0 Q-18 -70 -8 -190 L-3 -270 L0 -310 L3 -270 L8 -190 Q18 -70 48 0Z" />
+            <path d="M-28 0 Q0 -50 28 0" class="cut" />
+            <path d="M-30 -62 H30 M-12 -190 H12" class="thin" />
+            <path d="M-20 -62 L20 -190 M20 -62 L-20 -190" class="thin" />
+          </g>
+          <!-- crooked houses -->
+          <path d="M150 380 L160 300 L195 268 L232 296 L238 380Z" />
+          <path d="M260 380 L255 250 L282 222 L300 260 L306 380Z" />
+          <path d="M1260 380 L1268 286 L1300 252 L1330 288 L1322 380Z" />
+          <path d="M1360 380 L1366 320 L1404 300 L1428 330 L1420 380Z" />
+          <g class="win"><rect x="185" y="310" width="10" height="14" /><rect x="272" y="270" width="8" height="12" /><rect x="1292" y="300" width="10" height="14" /></g>
+          <!-- the hill -->
+          <path class="ground" d="M0 372 C260 340 520 318 800 338 S1300 386 1600 350 L1600 420 L0 420Z" />
+        </svg>
+      </div>
+
+      <a class="mono small scroll-hint" href="#story">Scroll <span>↓</span> till sunrise</a>
+    </section>
+
+    <!-- ============ STORY ============ -->
+    <section class="story" id="story" data-scene="1">
+      <div class="big-line" aria-hidden="true">
+        <span class="display outline" data-x="-0.6">Until the lights come on — until the lights come on —</span>
+      </div>
+      <div class="story-grid">
+        <div class="story-copy reveal">
+          <p class="mono small label">01 — How it started</p>
+          <h2 class="serif h2">We met at <em>4:47 am</em> on a dancefloor in Friedrichshain.</h2>
+          <p class="lead">One of us was looking for the cloakroom, the other was pretending to know the track ID. Seven years, two cities, one very loud flat in Paris and too many afterhours later — we're making it official.</p>
+          <p class="lead dim">Come for the vows, stay for the closing set.</p>
+        </div>
+      </div>
+      <svg class="curl boil" viewBox="0 0 1400 160" preserveAspectRatio="none" aria-hidden="true"><path data-curl="1400,160,5" data-draw /></svg>
+    </section>
+
+    <!-- tape across the floor -->
+    <div class="tapes" aria-hidden="true">
+      <div class="tape a"><div data-x="-0.5" class="display">Black &amp; white only ✦ No colour ✦ Black &amp; white only ✦ No colour ✦ Black &amp; white only ✦ No colour ✦ Black &amp; white only ✦</div></div>
+      <div class="tape b"><div data-x="0.5" class="display">Till sunrise ✦ 128 BPM ✦ Till sunrise ✦ 128 BPM ✦ Till sunrise ✦ 128 BPM ✦ Till sunrise ✦ 128 BPM ✦</div></div>
+    </div>
+
+    <!-- ============ LINEUP ============ -->
+    <section class="lineup" id="lineup" data-scene="2">
+      <div class="flyer">
+        <div class="flyer-head reveal">
+          <p class="mono small label">02 — Timetable</p>
+          <h2 class="display h2x">Line&#8209;up</h2>
+          <p class="mono small dim">Sat 12.06.2027 · Doors 15:30 · Open end</p>
+        </div>
+        <ol class="rows">
+          <li class="row reveal"><time class="mono">15:30</time><div><h3 class="display">Doors</h3><p class="serif"><em>Champagne &amp; minimal</em></p></div><span class="mono tag">Courtyard</span></li>
+          <li class="row reveal"><time class="mono">16:00</time><div><h3 class="display">Ceremony</h3><p class="serif"><em>Mara b2b Jules — vows (extended mix)</em></p></div><span class="mono tag">Main hall</span></li>
+          <li class="row reveal"><time class="mono">17:00</time><div><h3 class="display">Apéro</h3><p class="serif"><em>String quartet plays Daft Punk</em></p></div><span class="mono tag">Garden</span></li>
+          <li class="row reveal"><time class="mono">19:00</time><div><h3 class="display">Dinner</h3><p class="serif"><em>Long tables, longer speeches</em></p></div><span class="mono tag">Turbine room</span></li>
+          <li class="row reveal"><time class="mono">21:30</time><div><h3 class="display">First dance</h3><p class="serif"><em>Special guest: the newlyweds</em></p></div><span class="mono tag">Floor</span></li>
+          <li class="row reveal hot"><time class="mono">22:00</time><div><h3 class="display">Closing set</h3><p class="serif"><em>Friends &amp; DJs, Berlin → Paris, till sunrise</em></p></div><span class="mono tag">Floor</span></li>
+          <li class="row reveal"><time class="mono">05:30</time><div><h3 class="display">Afterhours</h3><p class="serif"><em>Croissants, coffee, sunglasses</em></p></div><span class="mono tag">Roof</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ DRESS CODE ============ -->
+    <section class="dress" id="dress" data-scene="3">
+      <div class="layer bats" data-bats="5" data-speed="-0.3" data-depth="20"></div>
+      <div class="dress-grid">
+        <div class="dress-copy reveal">
+          <p class="mono small label">03 — Dress code</p>
+          <h2 class="serif h2">Black. White.<br /><em>Nothing in between.</em></h2>
+          <div class="swatches" aria-hidden="true"><i class="s-black"></i><i class="s-white"></i><i class="s-stripe"></i></div>
+          <div class="dos">
+            <div>
+              <p class="mono small">Yes, please</p>
+              <ul class="serif">
+                <li>Tuxedos, slip dresses, sequins, latex</li>
+                <li>Stripes, polka dots, checkerboard</li>
+                <li>Shoes you can dance in for eight hours</li>
+                <li>Sunglasses — sunrise is at 4:43</li>
+              </ul>
+            </div>
+            <div>
+              <p class="mono small">Please, no</p>
+              <ul class="serif">
+                <li>Colour. Not even a little bit.</li>
+                <li>Grey is a loophole. We see you.</li>
+                <li>Heels that hate you</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="dancers-wrap" data-speed="-0.1">
+          <svg class="dancers boil" viewBox="0 0 420 540" aria-label="Two lanky figures dancing">
+            <!-- dancer in tux -->
+            <g class="dancer a" transform="translate(130 0)">
+              <g class="arm l"><path d="M-18 156 L-62 196 L-84 118" /><circle cx="-86" cy="112" r="6" class="fill" /></g>
+              <g class="arm r"><path d="M18 156 L58 210 L44 270" /><circle cx="44" cy="276" r="6" class="fill" /></g>
+              <path class="fill" d="M-22 144 L22 144 L32 334 L-32 334Z" />
+              <path class="paper" d="M-7 144 L7 144 L0 236Z" />
+              <path class="paper" d="M-13 146 L0 152 L13 146 L13 158 L0 152 L-13 158Z" />
+              <path d="M-12 334 L-22 488 M12 334 L20 488" class="leg" />
+              <path d="M-22 488 q-24 2 -30 -14 q8 4 14 -2" /><path d="M20 488 q24 2 30 -14 q-8 4 -14 -2" />
+              <path d="M0 120 L0 144" />
+              <ellipse cx="0" cy="80" rx="34" ry="42" class="paper" />
+              <ellipse cx="-12" cy="76" rx="9" ry="12" class="fill" /><ellipse cx="12" cy="76" rx="9" ry="12" class="fill" />
+              <path d="M-15 102 Q0 110 15 102 M-10 101 l0 6 M-3 104 l0 6 M4 104 l0 6 M11 101 l0 6" class="thin" />
+              <path d="M-26 46 Q0 24 26 46 Q0 36 -26 46Z" class="fill" />
+            </g>
+            <!-- dancer in stripes -->
+            <g class="dancer b" transform="translate(290 0)">
+              <g class="arm l"><path d="M-16 160 L-56 120 L-40 60" /><circle cx="-40" cy="54" r="6" class="fill" /></g>
+              <g class="arm r"><path d="M16 160 L56 120 L40 60" /><circle cx="40" cy="54" r="6" class="fill" /></g>
+              <path d="M-18 146 L18 146 L64 380 L-64 380Z" class="stripe" />
+              <path d="M-14 380 L-18 488 M14 380 L18 488" class="leg stripe-stroke" />
+              <path d="M-18 488 l-22 -4 M18 488 l22 -4" />
+              <path d="M0 124 L0 146" />
+              <path d="M-40 70 L-62 40 M-36 54 L-50 18 M-20 46 L-24 8 M0 42 L4 4 M20 46 L30 10 M36 54 L56 24 M40 70 L64 52" class="thin" />
+              <ellipse cx="0" cy="86" rx="32" ry="40" class="paper" />
+              <ellipse cx="-12" cy="82" rx="10" ry="13" class="fill" /><ellipse cx="12" cy="82" rx="10" ry="13" class="fill" />
+              <circle cx="-9" cy="79" r="2.5" class="paper nostroke" /><circle cx="15" cy="79" r="2.5" class="paper nostroke" />
+              <path d="M-12 108 Q0 116 12 108" class="thin" />
+            </g>
+            <path class="floor-line" d="M20 500 Q210 488 400 502" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VENUE ============ -->
+    <section class="venue" id="venue" data-scene="4">
+      <div class="venue-grid">
+        <div class="venue-copy reveal">
+          <p class="mono small label">04 — Venue</p>
+          <h2 class="serif h2">The Old <em>Power Station</em></h2>
+          <p class="lead">Somewhere in Friedrichshain, Berlin. Like any proper party, the exact pin drops in your inbox <b>48 hours before</b>.</p>
+          <p class="mono small dim">Nearest S-Bahn: Ostkreuz · Taxis on call till 07:00 · Hotel block at the river</p>
+        </div>
+        <ol class="rules reveal">
+          <li><span class="serif n">i</span><div><h3 class="display">No photos on the floor</h3><p>We'll sticker your camera at the door. Our photographer has it covered.</p></div></li>
+          <li><span class="serif n">ii</span><div><h3 class="display">Phones down for the vows</h3><p>Be here. Cry a little. It's allowed.</p></div></li>
+          <li><span class="serif n">iii</span><div><h3 class="display">Hydrate</h3><p>Water bar next to the DJ booth, all night.</p></div></li>
+          <li><span class="serif n">iv</span><div><h3 class="display">Be lovely</h3><p>Look after each other. That's the whole policy.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ RSVP ============ -->
+    <section class="rsvp" id="rsvp" data-scene="5">
+      <form id="rsvp-form" class="rsvp-card reveal" autocomplete="on">
+        <div class="form-body">
+          <p class="mono small label">05 — RSVP by 01.03.2027</p>
+          <h2 class="display h2x small-h">Are you on the list?</h2>
+          <label class="field"><span class="mono small">Full name</span><input name="name" required placeholder="Your name" /></label>
+          <label class="field"><span class="mono small">Email</span><input name="email" type="email" required placeholder="you@example.com" /></label>
+          <fieldset class="choice">
+            <legend class="mono small">Coming?</legend>
+            <label><input type="radio" name="attending" value="yes" required /><span>Put me on the list</span></label>
+            <label><input type="radio" name="attending" value="no" /><span>Sadly, no</span></label>
+          </fieldset>
+          <label class="field"><span class="mono small">Plus one (name)</span><input name="plusone" placeholder="Optional" /></label>
+          <label class="field"><span class="mono small">One track that gets you on the floor</span><input name="track" placeholder="Artist — Track" /></label>
+          <label class="field"><span class="mono small">Dietary needs</span><input name="diet" placeholder="Vegan, allergies…" /></label>
+          <button class="pill solid big" type="submit">Send RSVP →</button>
+        </div>
+        <div class="thanks" aria-live="polite">
+          <svg class="boil" viewBox="0 0 120 120" aria-hidden="true"><path data-spiral="60,60,4,54" /></svg>
+          <h3 class="serif"></h3>
+          <p class="mono small"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="foot mono small">
+    <span>Mara &amp; Jules · 12.06.2027</span>
+    <span class="dim">Made with love, particles &amp; 128 BPM</span>
+    <a href="#top">Back to the door ↑</a>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
