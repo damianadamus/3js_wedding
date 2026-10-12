@@ -333,3 +333,11 @@ section { position: relative; padding: 18vh var(--gutter); }
 .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .form-error { margin-top: 1rem; padding: 0.8em 1em; border: 1px dashed var(--paper); }
 .pill:disabled { opacity: 0.6; cursor: progress; }
+
+/* RSVP "opens soon" state — toggled by .rsvp-soon on the section */
+.rsvp-soon #rsvp-form, .rsvp:not(.rsvp-soon) .soon-card { display: none; }
+.soon-card { text-align: center; display: grid; justify-items: center; gap: 0.4rem; }
+.soon-card .label { margin-bottom: 1rem; }
+.soon-lead { font-size: clamp(1.3rem, 2vw, 1.8rem); font-weight: 300; margin-bottom: 0.6rem; }
+.soon-spiral { width: 64px; margin-top: 1.6rem; animation: spin 9s linear infinite; }
+.soon-spiral path { fill: none; stroke: var(--paper); stroke-width: 2; }

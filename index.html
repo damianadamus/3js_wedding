@@ -250,7 +250,15 @@
     </section>
 
     <!-- ============ RSVP ============ -->
-    <section class="rsvp" id="rsvp" data-scene="5">
+    <!-- remove "rsvp-soon" to show the RSVP form (needs a Formspree ID in the form action) -->
+    <section class="rsvp rsvp-soon" id="rsvp" data-scene="5">
+      <div class="rsvp-card soon-card reveal">
+        <p class="mono small label">05 — RSVP</p>
+        <h2 class="display h2x small-h">RSVP opens soon</h2>
+        <p class="serif soon-lead"><em>Save the date — Thursday, 04.08.2033, Warsaw.</em></p>
+        <p class="mono small dim">The guest list opens closer to the day. Keep your black &amp; white ready.</p>
+        <svg class="soon-spiral boil" viewBox="0 0 120 120" aria-hidden="true"><path data-spiral="60,60,4,54" /></svg>
+      </div>
       <form id="rsvp-form" class="rsvp-card reveal" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" autocomplete="on">
         <input type="hidden" name="_subject" value="RSVP — Paola &amp; Bejlux 04.08.2033" />
         <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" />
