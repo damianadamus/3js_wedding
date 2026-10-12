@@ -4,11 +4,45 @@
 const BPM = 128;
 const ROOTS = [55, 55, 43.65, 49]; // A, A, F, G — one per bar
 
+// One second of 8 kHz mono silence as a WAV blob URL (see unlockIOS below).
+function silentWavURL() {
+  const rate = 8000, samples = rate, bytes = samples * 2;
+  const v = new DataView(new ArrayBuffer(44 + bytes));
+  const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  str(0, 'RIFF'); v.setUint32(4, 36 + bytes, true); str(8, 'WAVE');
+  str(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  str(36, 'data'); v.setUint32(40, bytes, true);
+  return URL.createObjectURL(new Blob([v], { type: 'audio/wav' }));
+}
+
 export class Rave {
   constructor() {
     this.ctx = null;
     this.playing = false;
     this.timer = null;
+    this.silence = null;
+
+    // iOS suspends/"interrupts" the context when the tab is hidden or the screen locks
+    const wake = () => this.playing && this.ctx && this.ctx.state !== 'running' && this.ctx.resume();
+    document.addEventListener('visibilitychange', () => !document.hidden && wake());
+    window.addEventListener('pointerdown', wake);
+  }
+
+  // iOS Safari routes Web Audio through the "ambient" channel, which the ring/silent switch mutes.
+  // Declaring a playback session (iOS 17+), or playing an <audio> element on the same tap (older iOS),
+  // moves it to the media channel so the music plays like any video would.
+  unlockIOS() {
+    if (navigator.audioSession) {
+      try { navigator.audioSession.type = 'playback'; } catch {}
+      return;
+    }
+    if (!this.silence) {
+      this.silence = new Audio(silentWavURL());
+      this.silence.loop = true;
+      this.silence.setAttribute('playsinline', '');
+    }
+    this.silence.play().catch(() => {});
   }
 
   init() {
@@ -39,7 +73,9 @@ export class Rave {
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
   }
 
+  // must be called synchronously inside a tap/click handler
   start() {
+    this.unlockIOS();
     if (!this.ctx) this.init();
     const ctx = this.ctx;
     ctx.resume();
@@ -69,7 +105,11 @@ export class Rave {
     this.filter.frequency.setValueAtTime(this.filter.frequency.value, now);
     this.filter.frequency.exponentialRampToValueAtTime(250, now + 0.6);
     this.playing = false;
-    setTimeout(() => { if (!this.playing) clearInterval(this.timer); }, 700);
+    setTimeout(() => {
+      if (this.playing) return;
+      clearInterval(this.timer);
+      this.silence?.pause();
+    }, 700);
   }
 
   toggle() {
@@ -87,7 +127,14 @@ export class Rave {
 
   schedule() {
     const sixteenth = 60 / BPM / 4;
-    while (this.nextTime < this.ctx.currentTime + 0.12) {
+    const now = this.ctx.currentTime;
+    // after the tab was hidden, skip missed steps instead of firing them all at once (stays on the grid)
+    if (this.nextTime < now) {
+      const missed = Math.ceil((now - this.nextTime) / sixteenth);
+      this.nextTime += missed * sixteenth;
+      this.step = (this.step + missed) % 64;
+    }
+    while (this.nextTime < now + 0.12) {
       this.playStep(this.step, this.nextTime);
       this.nextTime += sixteenth;
       this.step = (this.step + 1) % 64;
